@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#2C1810">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="인삼 대시보드">
 <link rel="manifest" href="manifest.json">
 <title>계룡 인삼 농가 대시보드</title>
@@ -20,25 +19,34 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Noto Sans KR',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;}
 
+/* 헤더 */
 .header{background:var(--soil);color:var(--cream);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
 .header-title{font-size:15px;font-weight:700;}
 .header-sub{font-size:11px;color:var(--mist);margin-top:2px;}
-.header-time{font-family:'DM Mono',monospace;font-size:11px;color:var(--mist);}
+.header-time{font-family:'DM Mono',monospace;font-size:11px;color:var(--mist);text-align:right;}
 
+/* 지역 탭 */
 .region-tabs{background:var(--soil);padding:0 18px 12px;display:flex;gap:7px;}
 .tab{padding:5px 13px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid rgba(255,255,255,0.2);color:var(--mist);background:transparent;font-family:'Noto Sans KR',sans-serif;}
 .tab.active{background:var(--sprout);border-color:var(--sprout);color:white;}
 
+/* 섹션 네비 */
+.section-nav{background:var(--white);border-bottom:1px solid var(--fog);padding:0 18px;display:flex;gap:0;overflow-x:auto;scrollbar-width:none;position:sticky;top:56px;z-index:90;}
+.section-nav::-webkit-scrollbar{display:none;}
+.snav-btn{padding:12px 14px;font-size:12px;font-weight:600;color:var(--mist);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap;font-family:'Noto Sans KR',sans-serif;}
+.snav-btn.active{color:var(--leaf);border-bottom-color:var(--leaf);}
+
 .main{padding:14px;max-width:580px;margin:0 auto;display:flex;flex-direction:column;gap:13px;}
 .card{background:var(--white);border-radius:16px;padding:17px;box-shadow:0 2px 8px rgba(44,24,16,0.07);}
 .card-label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--mist);margin-bottom:11px;}
+.section-title{font-size:13px;font-weight:700;color:var(--soil);padding:6px 0 2px;border-left:3px solid var(--sprout);padding-left:10px;margin-bottom:4px;}
 
+/* 날씨 카드 */
 .weather-card{background:linear-gradient(135deg,var(--leaf) 0%,#3D6B1F 100%);color:white;border-radius:16px;padding:20px 18px;}
 .weather-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;}
 .weather-region{font-size:12px;opacity:0.75;margin-bottom:3px;}
 .weather-temp{font-size:46px;font-weight:300;line-height:1;font-family:'DM Mono',monospace;}
 .weather-temp sup{font-size:18px;vertical-align:super;}
-.weather-icon-big{font-size:50px;line-height:1;}
 .weather-desc{font-size:14px;opacity:0.9;margin-bottom:2px;}
 .weather-feels{font-size:12px;opacity:0.6;}
 .weather-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,0.15);border-radius:12px;overflow:hidden;margin-top:12px;}
@@ -56,6 +64,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--cream);color:var(--t
 @keyframes spin{to{transform:rotate(360deg);}}
 .spinner{width:18px;height:18px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:spin 0.8s linear infinite;}
 
+/* 주간 예보 */
 .forecast-row{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px;}
 .forecast-row::-webkit-scrollbar{display:none;}
 .forecast-item{flex:0 0 66px;text-align:center;padding:10px 4px;border-radius:12px;background:var(--fog);}
@@ -65,6 +74,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--cream);color:var(--t
 .forecast-hi{font-size:13px;font-weight:700;}
 .forecast-lo{font-size:11px;opacity:0.6;margin-top:1px;}
 
+/* 환경 체크 */
 .env-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
 .env-item{background:var(--fog);border-radius:12px;padding:12px;}
 .env-item-label{font-size:11px;color:var(--text-soft);margin-bottom:4px;}
@@ -80,7 +90,8 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--cream);color:var(--t
 .env-status.warn{color:var(--warn);}
 .env-status.danger{color:var(--danger);}
 
-.price-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+/* 시세 공통 */
+.price-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;}
 .year-select{
   appearance:none;-webkit-appearance:none;
   background:var(--leaf);color:white;border:none;border-radius:20px;
@@ -90,6 +101,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--cream);color:var(--t
   background-repeat:no-repeat;background-position:right 9px center;
 }
 
+/* 숫자 카드 */
 .stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px;}
 .stat-card{background:var(--fog);border-radius:12px;padding:11px 10px;}
 .stat-grade{font-size:10px;color:var(--text-soft);margin-bottom:4px;}
@@ -100,23 +112,22 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--cream);color:var(--t
 .stat-change.down{color:var(--blue);}
 .stat-change.same{color:var(--mist);}
 
+/* 기간 버튼 */
 .period-btns{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;scrollbar-width:none;}
 .period-btns::-webkit-scrollbar{display:none;}
-.period-btn{
-  padding:5px 12px;border-radius:20px;font-size:12px;
-  font-family:'Noto Sans KR',sans-serif;font-weight:600;
-  cursor:pointer;white-space:nowrap;flex-shrink:0;
-  border:1.5px solid var(--fog);background:var(--white);color:var(--text-soft);
-  transition:all 0.15s;
-}
+.period-btn{padding:5px 12px;border-radius:20px;font-size:12px;font-family:'Noto Sans KR',sans-serif;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;border:1.5px solid var(--fog);background:var(--white);color:var(--text-soft);transition:all 0.15s;}
 .period-btn.active{background:var(--sprout);border-color:var(--sprout);color:white;}
 
+/* 차트 */
 .chart-wrap{position:relative;width:100%;height:200px;}
+.chart-wrap-sm{position:relative;width:100%;height:160px;}
 
+/* 범례 */
 .legend-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;margin-bottom:14px;}
 .legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text-soft);}
 .legend-dot{width:18px;height:3px;border-radius:2px;flex-shrink:0;}
 
+/* 테이블 */
 .price-table{width:100%;border-collapse:collapse;}
 .price-table th{font-size:10px;color:var(--mist);font-weight:600;text-align:right;padding:0 0 8px;border-bottom:1px solid var(--fog);}
 .price-table th:first-child{text-align:left;}
@@ -129,6 +140,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--cream);color:var(--t
 .chg-down{color:var(--blue);}
 .chg-same{color:var(--mist);}
 
+/* 지역 비교 */
 .region-list{display:flex;flex-direction:column;gap:9px;}
 .region-item{display:flex;align-items:center;gap:9px;}
 .region-name{font-size:12px;font-weight:500;width:56px;flex-shrink:0;}
@@ -137,22 +149,44 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--cream);color:var(--t
 .region-bar-fill.highlight{background:var(--sprout);}
 .region-val{font-size:12px;font-weight:700;font-family:'DM Mono',monospace;width:65px;text-align:right;flex-shrink:0;}
 
+/* 전망 카드 */
+.outlook-card{background:var(--fog);border-radius:12px;padding:14px;}
+.outlook-month{font-size:11px;color:var(--text-soft);margin-bottom:4px;}
+.outlook-text{font-size:13px;line-height:1.6;color:var(--text);}
+.outlook-badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;margin-bottom:6px;}
+.outlook-badge.up{background:#FEE2E2;color:var(--danger);}
+.outlook-badge.down{background:#DBEAFE;color:var(--blue);}
+.outlook-badge.flat{background:var(--fog);color:var(--mist);}
+
+/* 마진 정보 */
+.margin-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--fog);}
+.margin-row:last-child{border-bottom:none;}
+.margin-label{font-size:12px;color:var(--text-soft);flex:1;}
+.margin-val{font-size:13px;font-weight:700;font-family:'DM Mono',monospace;}
+.margin-pct{font-size:11px;color:var(--mist);width:40px;text-align:right;}
+
+/* API 상태 배지 */
+.api-badge{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600;}
+.api-badge.live{background:#D1FAE5;color:#065F46;}
+.api-badge.mock{background:#FEF3C7;color:#92400E;}
+
+/* 새로고침 */
 .refresh-btn{background:var(--leaf);color:white;border:none;padding:10px 22px;border-radius:10px;font-size:13px;font-family:'Noto Sans KR',sans-serif;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;margin:0 auto;}
 .data-note{font-size:11px;color:var(--mist);text-align:center;padding:4px 0;}
 
 /* PWA 설치 배너 */
-.install-banner{
-  background:var(--soil);color:white;
-  padding:12px 18px;display:flex;align-items:center;justify-content:space-between;gap:10px;
-  display:none;
-}
+.install-banner{background:var(--soil);color:white;padding:12px 18px;display:none;align-items:center;justify-content:space-between;gap:10px;}
 .install-banner.show{display:flex;}
 .install-btn{background:var(--sprout);color:white;border:none;border-radius:8px;padding:7px 14px;font-size:12px;font-weight:700;font-family:'Noto Sans KR',sans-serif;cursor:pointer;white-space:nowrap;}
 .install-close{background:none;border:none;color:rgba(255,255,255,0.5);font-size:18px;cursor:pointer;padding:0 4px;}
+
+.divider{height:1px;background:var(--fog);margin:14px 0;}
+.note{font-size:11px;color:var(--mist);margin-top:10px;}
 </style>
 </head>
 <body>
 
+<!-- PWA 설치 배너 -->
 <div class="install-banner" id="installBanner">
   <div style="font-size:13px;">📱 홈화면에 추가하면 앱처럼 쓸 수 있어요</div>
   <div style="display:flex;gap:8px;align-items:center;">
@@ -161,155 +195,244 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--cream);color:var(--t
   </div>
 </div>
 
+<!-- 헤더 -->
 <div class="header">
   <div>
     <div class="header-title">🌿 계룡 인삼 농가 대시보드</div>
     <div class="header-sub">광석리 · 도곡리 · 향한리</div>
   </div>
-  <div class="header-time" id="currentTime">--:--</div>
+  <div>
+    <div class="header-time" id="currentTime">--:--</div>
+    <div style="text-align:right;margin-top:3px;"><span class="api-badge mock" id="apiBadge">참고값</span></div>
+  </div>
 </div>
 
+<!-- 지역 탭 -->
 <div class="region-tabs">
   <button class="tab active" onclick="selectRegion(this,'광석리')">📍 광석리</button>
   <button class="tab" onclick="selectRegion(this,'도곡리')">도곡리</button>
   <button class="tab" onclick="selectRegion(this,'향한리')">향한리</button>
 </div>
 
+<!-- 섹션 네비 -->
+<div class="section-nav">
+  <button class="snav-btn active" onclick="scrollTo('sec-weather')">🌤 날씨</button>
+  <button class="snav-btn" onclick="scrollTo('sec-today')">💰 오늘 시세</button>
+  <button class="snav-btn" onclick="scrollTo('sec-trend')">📈 추이</button>
+  <button class="snav-btn" onclick="scrollTo('sec-annual')">📅 연도별</button>
+  <button class="snav-btn" onclick="scrollTo('sec-outlook')">🔮 전망</button>
+  <button class="snav-btn" onclick="scrollTo('sec-margin')">📊 마진</button>
+  <button class="snav-btn" onclick="scrollTo('sec-region')">🗺 산지비교</button>
+</div>
+
 <div class="main">
 
-  <div class="weather-card">
-    <div class="weather-top">
-      <div>
-        <div class="weather-region" id="wRegion">계룡시 광석리</div>
-        <div class="weather-temp" id="wTemp">--<sup>°</sup></div>
-        <div class="weather-desc" id="wDesc">날씨 불러오는 중</div>
-        <div class="weather-feels" id="wFeels">체감 --°</div>
+  <!-- ① 날씨 -->
+  <div id="sec-weather">
+    <div class="weather-card">
+      <div class="weather-top">
+        <div>
+          <div class="weather-region" id="wRegion">계룡시 광석리</div>
+          <div class="weather-temp" id="wTemp">--<sup>°</sup></div>
+          <div class="weather-desc" id="wDesc">불러오는 중</div>
+          <div class="weather-feels" id="wFeels">체감 --°</div>
+        </div>
+        <div id="wIconWrap"><div class="spinner"></div></div>
       </div>
-      <div id="wIconWrap"><div class="spinner"></div></div>
+      <div class="weather-stats">
+        <div class="w-stat"><div class="w-stat-label">습도</div><div class="w-stat-val" id="wHumidity">--</div><div class="w-stat-unit">%</div></div>
+        <div class="w-stat"><div class="w-stat-label">바람</div><div class="w-stat-val" id="wWind">--</div><div class="w-stat-unit">km/h</div></div>
+        <div class="w-stat"><div class="w-stat-label">강수확률</div><div class="w-stat-val" id="wRain">--</div><div class="w-stat-unit">%</div></div>
+      </div>
+      <div class="insam-alert good" id="insamAlert">
+        <div class="alert-icon" id="alertIcon">🌱</div>
+        <div>
+          <div class="alert-title" id="alertTitle">생육 상태 확인 중...</div>
+          <div class="alert-desc" id="alertDesc">잠시만 기다려주세요</div>
+        </div>
+      </div>
     </div>
-    <div class="weather-stats">
-      <div class="w-stat"><div class="w-stat-label">습도</div><div class="w-stat-val" id="wHumidity">--</div><div class="w-stat-unit">%</div></div>
-      <div class="w-stat"><div class="w-stat-label">바람</div><div class="w-stat-val" id="wWind">--</div><div class="w-stat-unit">km/h</div></div>
-      <div class="w-stat"><div class="w-stat-label">강수확률</div><div class="w-stat-val" id="wRain">--</div><div class="w-stat-unit">%</div></div>
+
+    <div class="card" style="margin-top:13px;">
+      <div class="card-label">주간 예보</div>
+      <div class="forecast-row" id="forecastRow"><div style="color:var(--mist);font-size:13px;padding:8px 0;">불러오는 중...</div></div>
     </div>
-    <div class="insam-alert good" id="insamAlert">
-      <div class="alert-icon" id="alertIcon">🌱</div>
-      <div>
-        <div class="alert-title" id="alertTitle">생육 상태 확인 중...</div>
-        <div class="alert-desc" id="alertDesc">잠시만 기다려주세요</div>
+
+    <div class="card" style="margin-top:13px;">
+      <div class="card-label">인삼 재배 환경 체크</div>
+      <div class="env-grid">
+        <div class="env-item"><div class="env-item-label">🌡️ 온도</div><div class="env-val" id="envTemp">--°C</div><div class="env-bar-bg"><div class="env-bar-fill good" id="envTempBar" style="width:0%"></div></div><div class="env-range">적정: 15~25°C</div><div class="env-status good" id="envTempStatus">확인 중</div></div>
+        <div class="env-item"><div class="env-item-label">💧 습도</div><div class="env-val" id="envHumid">--%</div><div class="env-bar-bg"><div class="env-bar-fill good" id="envHumidBar" style="width:0%"></div></div><div class="env-range">적정: 60~80%</div><div class="env-status good" id="envHumidStatus">확인 중</div></div>
+        <div class="env-item"><div class="env-item-label">💨 바람</div><div class="env-val" id="envWind">-- km/h</div><div class="env-bar-bg"><div class="env-bar-fill good" id="envWindBar" style="width:0%"></div></div><div class="env-range">주의: 36km/h↑</div><div class="env-status good" id="envWindStatus">확인 중</div></div>
+        <div class="env-item"><div class="env-item-label">☁️ 날씨</div><div class="env-val" id="envCloud" style="font-size:13px;line-height:1.3;">--</div><div class="env-bar-bg"><div class="env-bar-fill good" id="envCloudBar" style="width:0%"></div></div><div class="env-range">인삼: 차광 필수</div><div class="env-status good" id="envCloudStatus">확인 중</div></div>
       </div>
     </div>
   </div>
 
-  <div class="card">
-    <div class="card-label">주간 예보</div>
-    <div class="forecast-row" id="forecastRow">
-      <div style="color:var(--mist);font-size:13px;padding:8px 0;">불러오는 중...</div>
+  <!-- ② 오늘 시세 -->
+  <div id="sec-today">
+    <div class="section-title">오늘 도·소매 시세</div>
+    <div class="card">
+      <div class="price-top">
+        <div class="card-label" style="margin-bottom:0">실시간 가격</div>
+        <select class="year-select" id="yearSelect" onchange="onYearChange()">
+          <option value="4">4년근</option>
+          <option value="5" selected>5년근</option>
+          <option value="6">6년근</option>
+        </select>
+      </div>
+      <div class="stat-grid" id="statGrid"></div>
+      <table class="price-table" id="todayTable">
+        <thead><tr><th>등급</th><th>도매가</th><th>소매가</th><th>전일비</th></tr></thead>
+        <tbody id="todayBody"></tbody>
+      </table>
+      <div class="note">서울 가락시장 경락가격 기준 · 단위: 원/kg</div>
     </div>
   </div>
 
-  <div class="card">
-    <div class="card-label">인삼 재배 환경 체크</div>
-    <div class="env-grid">
-      <div class="env-item">
-        <div class="env-item-label">🌡️ 온도</div>
-        <div class="env-val" id="envTemp">--°C</div>
-        <div class="env-bar-bg"><div class="env-bar-fill good" id="envTempBar" style="width:0%"></div></div>
-        <div class="env-range">적정: 15~25°C</div>
-        <div class="env-status good" id="envTempStatus">확인 중</div>
-      </div>
-      <div class="env-item">
-        <div class="env-item-label">💧 습도</div>
-        <div class="env-val" id="envHumid">--%</div>
-        <div class="env-bar-bg"><div class="env-bar-fill good" id="envHumidBar" style="width:0%"></div></div>
-        <div class="env-range">적정: 60~80%</div>
-        <div class="env-status good" id="envHumidStatus">확인 중</div>
-      </div>
-      <div class="env-item">
-        <div class="env-item-label">💨 바람</div>
-        <div class="env-val" id="envWind">-- km/h</div>
-        <div class="env-bar-bg"><div class="env-bar-fill good" id="envWindBar" style="width:0%"></div></div>
-        <div class="env-range">주의: 36km/h↑</div>
-        <div class="env-status good" id="envWindStatus">확인 중</div>
-      </div>
-      <div class="env-item">
-        <div class="env-item-label">☁️ 날씨</div>
-        <div class="env-val" id="envCloud" style="font-size:13px;line-height:1.3;">--</div>
-        <div class="env-bar-bg"><div class="env-bar-fill good" id="envCloudBar" style="width:0%"></div></div>
-        <div class="env-range">인삼: 차광 필수</div>
-        <div class="env-status good" id="envCloudStatus">확인 중</div>
-      </div>
+  <!-- ③ 기간별 추이 -->
+  <div id="sec-trend">
+    <div class="section-title">기간별 시세 추이</div>
+    <div class="card">
+      <div class="period-btns" id="periodBtns"></div>
+      <div class="chart-wrap"><canvas id="trendChart" role="img" aria-label="인삼 기간별 시세 추이"></canvas></div>
+      <div class="legend-row" id="trendLegend"></div>
+      <div class="note">등급별 도매가 기준 · KAMIS</div>
     </div>
   </div>
 
-  <div class="card">
-    <div class="price-top">
-      <div class="card-label" style="margin-bottom:0">인삼 도매 시세</div>
-      <select class="year-select" id="yearSelect" onchange="onYearChange()">
-        <option value="4">4년근</option>
-        <option value="5" selected>5년근</option>
-        <option value="6">6년근</option>
-      </select>
+  <!-- ④ 연도별 추이 (최근 5년) -->
+  <div id="sec-annual">
+    <div class="section-title">연도별 시세 (최근 5년)</div>
+    <div class="card">
+      <div class="price-top">
+        <div class="card-label" style="margin-bottom:0">연간 평균가 추이</div>
+        <select class="year-select" id="annualGradeSelect" onchange="renderAnnual()">
+          <option value="특">특품</option>
+          <option value="상" selected>상품</option>
+          <option value="중">중품</option>
+        </select>
+      </div>
+      <div class="chart-wrap"><canvas id="annualChart" role="img" aria-label="인삼 연도별 평균 시세"></canvas></div>
+      <div class="divider"></div>
+      <table class="price-table">
+        <thead><tr><th>연도</th><th>4년근</th><th>5년근</th><th>6년근</th></tr></thead>
+        <tbody id="annualBody"></tbody>
+      </table>
+      <div class="note">연간 평균 도매가 · KAMIS 연도별 조회 기준</div>
     </div>
-    <div class="stat-grid" id="statGrid"></div>
-    <div class="period-btns" id="periodBtns"></div>
-    <div class="chart-wrap">
-      <canvas id="priceChart" role="img" aria-label="인삼 도매 시세 기간별 추이 차트"></canvas>
-    </div>
-    <div class="legend-row" id="legendRow"></div>
-    <table class="price-table">
-      <thead>
-        <tr>
-          <th>등급</th><th>현재가</th><th>전일비</th><th>기간등락</th>
-        </tr>
-      </thead>
-      <tbody id="priceTableBody"></tbody>
-    </table>
-    <div style="margin-top:10px;font-size:11px;color:var(--mist);">서울 가락시장 기준 참고값 · KAMIS · 단위: 원/kg</div>
   </div>
 
-  <div class="card">
-    <div class="price-top">
-      <div class="card-label" style="margin-bottom:0">산지별 시세 비교</div>
-      <div style="font-size:11px;color:var(--mist)" id="regionLabel">5년근 상품 기준</div>
+  <!-- ⑤ 가격 전망 -->
+  <div id="sec-outlook">
+    <div class="section-title">이달 가격 전망</div>
+    <div class="card">
+      <div class="card-label">KAMIS 품목별 전망</div>
+      <div style="display:flex;flex-direction:column;gap:10px;" id="outlookList"></div>
+      <div class="note" style="margin-top:12px;">KAMIS 농산물 가격전망 기준 · 매월 초 업데이트</div>
     </div>
-    <div class="region-list" id="regionList"></div>
-    <div style="margin-top:10px;font-size:11px;color:var(--mist);">수삼 상품 기준 · 원/kg</div>
+  </div>
+
+  <!-- ⑥ 유통 마진 -->
+  <div id="sec-margin">
+    <div class="section-title">도·소매 유통 마진</div>
+    <div class="card">
+      <div class="price-top">
+        <div class="card-label" style="margin-bottom:0">가격 차이 분석</div>
+        <select class="year-select" id="marginYearSelect" onchange="renderMargin()">
+          <option value="4">4년근</option>
+          <option value="5" selected>5년근</option>
+          <option value="6">6년근</option>
+        </select>
+      </div>
+      <div class="chart-wrap-sm"><canvas id="marginChart" role="img" aria-label="도매 소매 마진 차트"></canvas></div>
+      <div class="divider"></div>
+      <div id="marginList"></div>
+      <div class="note">도매(경락가) vs 소매 차이 · 유통 마진 참고용</div>
+    </div>
+  </div>
+
+  <!-- ⑦ 산지별 비교 -->
+  <div id="sec-region">
+    <div class="section-title">산지별 시세 비교</div>
+    <div class="card">
+      <div class="price-top">
+        <div class="card-label" style="margin-bottom:0">주요 산지 가격</div>
+        <div style="font-size:11px;color:var(--mist)" id="regionLabel">5년근 상품 기준</div>
+      </div>
+      <div class="region-list" id="regionList"></div>
+      <div class="note">수삼 상품 기준 · 원/kg</div>
+    </div>
   </div>
 
   <button class="refresh-btn" onclick="loadAll()"><span id="refreshIcon">🔄</span> 새로고침</button>
-  <div class="data-note">날씨: Open-Meteo API · 시세: KAMIS 참고값</div>
+  <div class="data-note">날씨: Open-Meteo · 시세: KAMIS 참고값 (API 키 연동 후 실시간 전환)</div>
   <div style="height:16px;"></div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
-// ── PWA 설치 ──
+// ══════════════════════════════════════════
+// ★ KAMIS API 키 설정 (키 받으면 여기만 수정)
+// ══════════════════════════════════════════
+const KAMIS_KEY = '';   // 예: 'abcd1234-...'
+const KAMIS_ID  = '';   // KAMIS 로그인 아이디
+const USE_REAL_API = KAMIS_KEY !== '';
+
+// ── PWA ──
 let deferredPrompt;
 window.addEventListener('beforeinstallprompt', e => {
-  e.preventDefault();
-  deferredPrompt = e;
+  e.preventDefault(); deferredPrompt = e;
   document.getElementById('installBanner').classList.add('show');
 });
 document.getElementById('installBtn').addEventListener('click', async () => {
   if(!deferredPrompt) return;
   deferredPrompt.prompt();
-  const {outcome} = await deferredPrompt.userChoice;
+  await deferredPrompt.userChoice;
   deferredPrompt = null;
   document.getElementById('installBanner').classList.remove('show');
 });
-if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('sw.js').catch(()=>{});
-}
+if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
 
-// ── 지역 ──
+// ── 상수 ──
 const REGIONS = {
   '광석리':{lat:36.277,lon:127.189,label:'계룡시 광석리'},
   '도곡리':{lat:36.282,lon:127.195,label:'계룡시 도곡리'},
   '향한리':{lat:36.270,lon:127.183,label:'계룡시 향한리'},
 };
-let curRegion = '광석리';
+const GRADE_META = {
+  4:[{k:'특',label:'수삼 특',color:'#2a78d6',dash:[]},{k:'상',label:'수삼 상',color:'#1baf7a',dash:[5,3]},{k:'중',label:'수삼 중',color:'#eda100',dash:[2,2]}],
+  5:[{k:'특',label:'수삼 특',color:'#2a78d6',dash:[]},{k:'상',label:'수삼 상',color:'#1baf7a',dash:[5,3]},{k:'중',label:'수삼 중',color:'#eda100',dash:[2,2]}],
+  6:[{k:'특',label:'수삼 특',color:'#2a78d6',dash:[]},{k:'상',label:'수삼 상',color:'#1baf7a',dash:[5,3]},{k:'홍',label:'홍삼 1등',color:'#e34948',dash:[6,2]}],
+};
+// 참고값 데이터
+const MOCK = {
+  today: {
+    4:{특:{도:48000,소:72000,chg:+500},상:{도:42000,소:63000,chg:-800},중:{도:33000,소:49500,chg:0}},
+    5:{특:{도:75000,소:112500,chg:+1500},상:{도:68000,소:102000,chg:+1200},중:{도:52000,소:78000,chg:-500}},
+    6:{특:{도:110000,소:165000,chg:+3000},상:{도:95000,소:142500,chg:+2500},홍:{도:180000,소:270000,chg:-1000}},
+  },
+  annual: {
+    특:{2022:{4:44000,5:70000,6:103000},2023:{4:46000,5:72000,6:106000},2024:{4:47000,5:74000,6:108000},2025:{4:47500,5:74500,6:109000},2026:{4:48000,5:75000,6:110000}},
+    상:{2022:{4:38000,5:63000,6:89000},2023:{4:40000,5:65000,6:92000},2024:{4:41000,5:67000,6:94000},2025:{4:41500,5:67500,6:94500},2026:{4:42000,5:68000,6:95000}},
+    중:{2022:{4:30000,5:48000,6:69000},2023:{4:31000,5:50000,6:71000},2024:{4:32000,5:51000,6:72000},2025:{4:32500,5:51500,6:72000},2026:{4:33000,5:52000,6:72000}},
+  },
+  outlook: [
+    {item:'수삼 5년근',dir:'up',text:'추석 수요 증가로 9월까지 강세 전망. 특품 위주 공급 감소로 가격 지지.'},
+    {item:'수삼 6년근',dir:'flat',text:'홍삼 원료 수요 안정적. 대형 제조사 재고 소진 후 소폭 상승 가능.'},
+    {item:'수삼 4년근',dir:'down',text:'신규 출하 물량 증가로 단기 약세. 중순 이후 회복 예상.'},
+  ],
+  region: {
+    4:[{n:'충남 금산',p:43000},{n:'경북 풍기',p:45000},{n:'강원 횡성',p:40000},{n:'충남 계룡',p:41000,h:true},{n:'충북 음성',p:38000}],
+    5:[{n:'충남 금산',p:68500},{n:'경북 풍기',p:72000},{n:'강원 횡성',p:65000},{n:'충남 계룡',p:66000,h:true},{n:'충북 음성',p:61000}],
+    6:[{n:'충남 금산',p:96000},{n:'경북 풍기',p:102000},{n:'강원 횡성',p:91000},{n:'충남 계룡',p:93000,h:true},{n:'충북 음성',p:87000}],
+  }
+};
 
+let curRegion='광석리', selYear=5, selDays=30, selGrade='상';
+let charts = {};
+
+// ── 시계 ──
 function updateTime(){
   const n=new Date();
   document.getElementById('currentTime').textContent=
@@ -317,6 +440,14 @@ function updateTime(){
 }
 setInterval(updateTime,30000); updateTime();
 
+// ── 섹션 스크롤 ──
+function scrollTo(id){
+  document.getElementById(id).scrollIntoView({behavior:'smooth',block:'start'});
+  document.querySelectorAll('.snav-btn').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+// ── 날씨 유틸 ──
 function wIcon(c,day){
   if(c===0)return day?'☀️':'🌙';if(c<=2)return day?'⛅':'🌙';
   if(c===3)return'☁️';if(c<=49)return'🌫️';if(c<=59)return'🌦️';
@@ -349,17 +480,17 @@ function setEnv(vId,bId,sId,disp,pct,lv,stxt){
   document.getElementById(sId).className='env-status '+lv;
 }
 
+// ── 날씨 로드 ──
 async function loadWeather(){
   const r=REGIONS[curRegion];
   document.getElementById('wRegion').textContent=r.label;
   try{
     const url=`https://api.open-meteo.com/v1/forecast?latitude=${r.lat}&longitude=${r.lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,precipitation_probability&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Asia%2FSeoul&forecast_days=7`;
     const res=await fetch(url);
-    if(!res.ok)throw new Error('fetch fail');
+    if(!res.ok)throw new Error();
     renderWeather(await res.json());
   }catch(e){
-    renderWeather({
-      fallback:true,
+    renderWeather({fallback:true,
       current:{temperature_2m:22,relative_humidity_2m:78,apparent_temperature:23,weather_code:2,wind_speed_10m:12,precipitation_probability:15},
       daily:{time:['2026-06-26','2026-06-27','2026-06-28','2026-06-29','2026-06-30','2026-07-01','2026-07-02'],
         weather_code:[2,3,61,1,2,3,61],temperature_2m_max:[27,29,26,31,30,29,27],
@@ -367,7 +498,6 @@ async function loadWeather(){
     });
   }
 }
-
 function renderWeather(d){
   const c=d.current;
   const temp=Math.round(c.temperature_2m),feels=Math.round(c.apparent_temperature);
@@ -386,41 +516,81 @@ function renderWeather(d){
   document.getElementById('alertTitle').textContent=s.title;
   document.getElementById('alertDesc').textContent=s.desc;
   const tLv=temp<0||temp>30?'danger':temp<15||temp>25?'warn':'good';
-  setEnv('envTemp','envTempBar','envTempStatus',temp+'°C',Math.min(100,(temp+10)/50*100),tLv,tLv==='good'?'✓ 적정 범위':tLv==='warn'?'△ 주의 범위':'⚠️ 위험');
+  setEnv('envTemp','envTempBar','envTempStatus',temp+'°C',Math.min(100,(temp+10)/50*100),tLv,tLv==='good'?'✓ 적정':tLv==='warn'?'△ 주의':'⚠️ 위험');
   const hLv=humid<50||humid>90?'danger':humid<60||humid>80?'warn':'good';
-  setEnv('envHumid','envHumidBar','envHumidStatus',humid+'%',humid,hLv,hLv==='good'?'✓ 적정 범위':hLv==='warn'?'△ 주의 범위':'⚠️ 위험');
+  setEnv('envHumid','envHumidBar','envHumidStatus',humid+'%',humid,hLv,hLv==='good'?'✓ 적정':hLv==='warn'?'△ 주의':'⚠️ 위험');
   const wLv=wind>=36?'danger':wind>=20?'warn':'good';
-  setEnv('envWind','envWindBar','envWindStatus',wind+' km/h',Math.min(100,wind/50*100),wLv,wLv==='good'?'✓ 양호':wLv==='warn'?'△ 주의':'⚠️ 강풍 위험');
+  setEnv('envWind','envWindBar','envWindStatus',wind+' km/h',Math.min(100,wind/50*100),wLv,wLv==='good'?'✓ 양호':wLv==='warn'?'△ 주의':'⚠️ 강풍');
   const cLv=code===0?'warn':'good';
-  setEnv('envCloud','envCloudBar','envCloudStatus',wDesc(code),code===0?85:code<=2?55:35,cLv,code===0?'⚠️ 차광 확인 필요':'✓ 양호');
-  const daily=d.daily;
+  setEnv('envCloud','envCloudBar','envCloudStatus',wDesc(code),code===0?85:code<=2?55:35,cLv,code===0?'⚠️ 차광 확인':'✓ 양호');
   let fh='';
   for(let i=0;i<7;i++){
     fh+=`<div class="forecast-item ${i===0?'today':''}">
-      <div class="forecast-day">${dayName(daily.time[i],i)}</div>
-      <div class="forecast-icon">${wIcon(daily.weather_code[i],true)}</div>
-      <div class="forecast-hi">${Math.round(daily.temperature_2m_max[i])}°</div>
-      <div class="forecast-lo">${Math.round(daily.temperature_2m_min[i])}°</div>
+      <div class="forecast-day">${dayName(d.daily.time[i],i)}</div>
+      <div class="forecast-icon">${wIcon(d.daily.weather_code[i],true)}</div>
+      <div class="forecast-hi">${Math.round(d.daily.temperature_2m_max[i])}°</div>
+      <div class="forecast-lo">${Math.round(d.daily.temperature_2m_min[i])}°</div>
     </div>`;
   }
   document.getElementById('forecastRow').innerHTML=fh;
 }
 
-// ── 시세 ──
-const GRADE_META={
-  4:[{k:'특',label:'수삼 특',color:'#2a78d6',dash:[]},{k:'상',label:'수삼 상',color:'#1baf7a',dash:[5,3]},{k:'중',label:'수삼 중',color:'#eda100',dash:[2,2]}],
-  5:[{k:'특',label:'수삼 특',color:'#2a78d6',dash:[]},{k:'상',label:'수삼 상',color:'#1baf7a',dash:[5,3]},{k:'중',label:'수삼 중',color:'#eda100',dash:[2,2]}],
-  6:[{k:'특',label:'수삼 특',color:'#2a78d6',dash:[]},{k:'상',label:'수삼 상',color:'#1baf7a',dash:[5,3]},{k:'홍',label:'홍삼 1등',color:'#e34948',dash:[6,2]}],
-};
-const BASE_PRICE={4:{특:48000,상:42000,중:33000},5:{특:75000,상:68000,중:52000},6:{특:110000,상:95000,홍:180000}};
-const DAY_CHANGE={4:{특:+500,상:-800,중:0},5:{특:+1500,상:+1200,중:-500},6:{특:+3000,상:+2500,홍:-1000}};
-const REGION_DATA={
-  4:[{n:'충남 금산',p:43000},{n:'경북 풍기',p:45000},{n:'강원 횡성',p:40000},{n:'충남 계룡',p:41000,h:true},{n:'충북 음성',p:38000}],
-  5:[{n:'충남 금산',p:68500},{n:'경북 풍기',p:72000},{n:'강원 횡성',p:65000},{n:'충남 계룡',p:66000,h:true},{n:'충북 음성',p:61000}],
-  6:[{n:'충남 금산',p:96000},{n:'경북 풍기',p:102000},{n:'강원 횡성',p:91000},{n:'충남 계룡',p:93000,h:true},{n:'충북 음성',p:87000}],
-};
+// ── 오늘 시세 ──
+async function loadToday(){
+  let data;
+  if(USE_REAL_API){
+    try{
+      // KAMIS 최근일자 도소매가격 API
+      const today=new Date();
+      const dt=`${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+      const url=`https://www.kamis.or.kr/service/price/xml.do?action=dailySalesList&p_cert_key=${KAMIS_KEY}&p_cert_id=${KAMIS_ID}&p_returntype=json&p_regday=${dt}&p_itemcategorycode=200&p_itemcode=246&p_kindcode=01&p_productrankcode=04&p_countrycode=1101`;
+      const res=await fetch(url);
+      const json=await res.json();
+      // 실제 API 응답 파싱 (키 받으면 구조 맞춰 수정)
+      data = parseKamisToday(json);
+      document.getElementById('apiBadge').textContent='실시간';
+      document.getElementById('apiBadge').className='api-badge live';
+    }catch(e){ data=null; }
+  }
+  renderToday(data || MOCK.today);
+}
+
+function parseKamisToday(json){
+  // KAMIS API 응답 구조에 맞게 파싱 (키 받은 후 실제 구조 확인 필요)
+  return MOCK.today;
+}
+
+function renderToday(data){
+  const yr=selYear;
+  const metas=GRADE_META[yr];
+  const d=data[yr];
+  // 숫자 카드
+  document.getElementById('statGrid').innerHTML=metas.map((m,i)=>{
+    const item=Object.values(d)[i];
+    const chgCls=item.chg>0?'up':item.chg<0?'down':'same';
+    const arr=item.chg>0?'▲':item.chg<0?'▼':'—';
+    return `<div class="stat-card">
+      <div class="stat-grade"><span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:${m.color};margin-right:4px;vertical-align:middle;"></span>${m.label}</div>
+      <div class="stat-price">${item.도.toLocaleString()}<span class="stat-unit">원</span></div>
+      <div class="stat-change ${chgCls}">${arr} ${Math.abs(item.chg).toLocaleString()}</div>
+    </div>`;
+  }).join('');
+  // 테이블
+  document.getElementById('todayBody').innerHTML=metas.map((m,i)=>{
+    const item=Object.values(d)[i];
+    const dCls=item.chg>0?'chg-up':item.chg<0?'chg-down':'chg-same';
+    const darr=item.chg>0?'▲':item.chg<0?'▼':'—';
+    return `<tr>
+      <td><span class="grade-dot" style="background:${m.color}"></span>${m.label}</td>
+      <td class="price-now">${item.도.toLocaleString()}</td>
+      <td>${item.소.toLocaleString()}</td>
+      <td class="${dCls}">${darr} ${Math.abs(item.chg).toLocaleString()}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ── 기간별 추이 차트 ──
 const PERIODS=[{label:'1주',days:7},{label:'1개월',days:30},{label:'3개월',days:90},{label:'6개월',days:180},{label:'1년',days:365}];
-let selYear=5,selDays=30,chartInst=null;
 
 function makeHistory(base,days){
   const arr=[];const now=Date.now();let v=base;
@@ -431,43 +601,25 @@ function makeHistory(base,days){
   }
   return arr;
 }
-function thinLabels(arr,days){
-  const step=days<=7?1:days<=30?5:days<=90?10:days<=180?20:45;
-  return arr.map((a,i)=>i%step===0?a.lbl:'');
-}
 
-function renderPrice(){
-  const yr=selYear,days=selDays;
+function renderTrend(){
+  const yr=selYear, days=selDays;
   const metas=GRADE_META[yr];
-  const bases=Object.values(BASE_PRICE[yr]);
-  const changes=Object.values(DAY_CHANGE[yr]);
+  const bases=Object.values(MOCK.today[yr]).map(d=>d.도);
   const hists=metas.map((_,i)=>makeHistory(bases[i],days));
-  const thin=thinLabels(hists[0],days);
-
-  document.getElementById('statGrid').innerHTML=metas.map((m,i)=>{
-    const last=hists[i][hists[i].length-1].val;
-    const chg=changes[i];
-    const chgCls=chg>0?'up':chg<0?'down':'same';
-    const arr=chg>0?'▲':chg<0?'▼':'—';
-    return `<div class="stat-card">
-      <div class="stat-grade"><span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:${m.color};margin-right:4px;vertical-align:middle;"></span>${m.label}</div>
-      <div class="stat-price">${last.toLocaleString()}<span class="stat-unit">원</span></div>
-      <div class="stat-change ${chgCls}">${arr} ${Math.abs(chg).toLocaleString()}</div>
-    </div>`;
-  }).join('');
-
+  const step=days<=7?1:days<=30?5:days<=90?10:days<=180?20:45;
+  const labels=hists[0].map((h,i)=>i%step===0?h.lbl:'');
   document.getElementById('periodBtns').innerHTML=PERIODS.map(p=>
     `<button class="period-btn ${p.days===selDays?'active':''}" onclick="setPeriod(${p.days})">${p.label}</button>`
   ).join('');
-
-  const datasets=metas.map((m,i)=>({
-    label:m.label,data:hists[i].map(h=>h.val),
-    borderColor:m.color,borderWidth:2,borderDash:m.dash,
-    pointRadius:0,pointHoverRadius:4,tension:0.3,fill:false,
-  }));
-  if(chartInst)chartInst.destroy();
-  chartInst=new Chart(document.getElementById('priceChart'),{
-    type:'line',data:{labels:thin,datasets},
+  if(charts.trend) charts.trend.destroy();
+  charts.trend=new Chart(document.getElementById('trendChart'),{
+    type:'line',
+    data:{labels,datasets:metas.map((m,i)=>({
+      label:m.label,data:hists[i].map(h=>h.val),
+      borderColor:m.color,borderWidth:2,borderDash:m.dash,
+      pointRadius:0,pointHoverRadius:4,tension:0.3,fill:false,
+    }))},
     options:{
       responsive:true,maintainAspectRatio:false,
       interaction:{mode:'index',intersect:false},
@@ -478,27 +630,106 @@ function renderPrice(){
       }
     }
   });
-
-  document.getElementById('legendRow').innerHTML=metas.map(m=>
+  document.getElementById('trendLegend').innerHTML=metas.map(m=>
     `<div class="legend-item"><div class="legend-dot" style="background:${m.color}"></div>${m.label}</div>`
   ).join('');
+}
 
-  document.getElementById('priceTableBody').innerHTML=metas.map((m,i)=>{
-    const first=hists[i][0].val,last=hists[i][hists[i].length-1].val;
-    const pdiff=last-first,psign=pdiff>=0?'+':'';
-    const pCls=pdiff>0?'chg-up':pdiff<0?'chg-down':'chg-same';
-    const chg=changes[i];
-    const dCls=chg>0?'chg-up':chg<0?'chg-down':'chg-same';
-    const darr=chg>0?'▲':chg<0?'▼':'—';
-    return `<tr>
-      <td><span class="grade-dot" style="background:${m.color}"></span>${m.label}</td>
-      <td class="price-now">${last.toLocaleString()}</td>
-      <td class="${dCls}">${darr} ${Math.abs(chg).toLocaleString()}</td>
-      <td class="${pCls}">${psign}${pdiff.toLocaleString()}</td>
-    </tr>`;
+// ── 연도별 추이 ──
+function renderAnnual(){
+  const grade=document.getElementById('annualGradeSelect').value;
+  const data=MOCK.annual[grade];
+  const years=Object.keys(data);
+  const colors={4:'#2a78d6',5:'#1baf7a',6:'#e34948'};
+  if(charts.annual) charts.annual.destroy();
+  charts.annual=new Chart(document.getElementById('annualChart'),{
+    type:'bar',
+    data:{
+      labels:years,
+      datasets:[4,5,6].map(yr=>({
+        label:yr+'년근',
+        data:years.map(y=>data[y][yr]),
+        backgroundColor:colors[yr]+'33',
+        borderColor:colors[yr],
+        borderWidth:2,
+        borderRadius:4,
+      }))
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.dataset.label}: ${ctx.parsed.y.toLocaleString()}원`}}},
+      scales:{
+        x:{grid:{display:false},ticks:{color:'#C4B8A8',font:{size:11}},border:{display:false}},
+        y:{grid:{color:'#E8E0D4'},ticks:{color:'#C4B8A8',font:{size:10},callback:v=>(v/1000).toFixed(0)+'k'},border:{display:false}}
+      }
+    }
+  });
+  // 테이블
+  document.getElementById('annualBody').innerHTML=years.map(y=>`
+    <tr>
+      <td style="font-family:'Noto Sans KR',sans-serif;font-weight:600;">${y}년</td>
+      <td>${data[y][4].toLocaleString()}</td>
+      <td>${data[y][5].toLocaleString()}</td>
+      <td>${data[y][6].toLocaleString()}</td>
+    </tr>`).join('');
+}
+
+// ── 가격 전망 ──
+function renderOutlook(){
+  document.getElementById('outlookList').innerHTML=MOCK.outlook.map(o=>{
+    const badgeCls=o.dir==='up'?'up':o.dir==='down'?'down':'flat';
+    const badgeTxt=o.dir==='up'?'▲ 강세 전망':o.dir==='down'?'▼ 약세 전망':'→ 보합 전망';
+    return `<div class="outlook-card">
+      <div class="outlook-month">${o.item}</div>
+      <span class="outlook-badge ${badgeCls}">${badgeTxt}</span>
+      <div class="outlook-text">${o.text}</div>
+    </div>`;
   }).join('');
+}
 
-  const rp=REGION_DATA[yr];
+// ── 유통 마진 ──
+function renderMargin(){
+  const yr=parseInt(document.getElementById('marginYearSelect').value);
+  const metas=GRADE_META[yr];
+  const data=MOCK.today[yr];
+  const items=Object.values(data);
+  const labels=metas.map(m=>m.label);
+  const wholesale=items.map(d=>d.도);
+  const retail=items.map(d=>d.소);
+  if(charts.margin) charts.margin.destroy();
+  charts.margin=new Chart(document.getElementById('marginChart'),{
+    type:'bar',
+    data:{
+      labels,
+      datasets:[
+        {label:'도매가',data:wholesale,backgroundColor:'#2a78d633',borderColor:'#2a78d6',borderWidth:2,borderRadius:4},
+        {label:'소매가',data:retail,backgroundColor:'#e3494833',borderColor:'#e34948',borderWidth:2,borderRadius:4},
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.dataset.label}: ${ctx.parsed.y.toLocaleString()}원`}}},
+      scales:{
+        x:{grid:{display:false},ticks:{color:'#C4B8A8',font:{size:11}},border:{display:false}},
+        y:{grid:{color:'#E8E0D4'},ticks:{color:'#C4B8A8',font:{size:10},callback:v=>(v/1000).toFixed(0)+'k'},border:{display:false}}
+      }
+    }
+  });
+  document.getElementById('marginList').innerHTML=metas.map((m,i)=>{
+    const margin=items[i].소-items[i].도;
+    const pct=((margin/items[i].도)*100).toFixed(1);
+    return `<div class="margin-row">
+      <div class="margin-label"><span class="grade-dot" style="background:${m.color}"></span>${m.label}</div>
+      <div class="margin-val">+${margin.toLocaleString()}원</div>
+      <div class="margin-pct">${pct}%</div>
+    </div>`;
+  }).join('');
+}
+
+// ── 산지별 비교 ──
+function renderRegion(){
+  const yr=selYear;
+  const rp=MOCK.region[yr];
   const maxP=Math.max(...rp.map(r=>r.p));
   document.getElementById('regionList').innerHTML=rp.map(r=>`
     <div class="region-item">
@@ -509,8 +740,14 @@ function renderPrice(){
   document.getElementById('regionLabel').textContent=`${yr}년근 상품 기준`;
 }
 
-function setPeriod(days){selDays=days;renderPrice();}
-function onYearChange(){selYear=parseInt(document.getElementById('yearSelect').value);renderPrice();}
+// ── 이벤트 ──
+function setPeriod(days){selDays=days;renderTrend();}
+function onYearChange(){
+  selYear=parseInt(document.getElementById('yearSelect').value);
+  renderToday(MOCK.today);
+  renderTrend();
+  renderRegion();
+}
 function selectRegion(el,name){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   el.classList.add('active');curRegion=name;loadWeather();
@@ -519,7 +756,12 @@ async function loadAll(){
   const ic=document.getElementById('refreshIcon');
   ic.textContent='⏳';
   await loadWeather();
-  renderPrice();
+  await loadToday();
+  renderTrend();
+  renderAnnual();
+  renderOutlook();
+  renderMargin();
+  renderRegion();
   ic.textContent='🔄';
 }
 loadAll();
