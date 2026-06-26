@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#2C1810">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="인삼 대시보드">
+<link rel="manifest" href="manifest.json">
+<title>계룡 인삼 농가 대시보드</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap');
+:root{
+  --soil:#2C1810;--root:#8B4513;--leaf:#2D5016;--sprout:#5A8C2A;
+  --cream:#F7F2EA;--fog:#E8E0D4;--mist:#C4B8A8;--white:#FEFEFE;
+  --text:#1A1209;--text-soft:#5C4A35;
+  --warn:#D47A2A;--danger:#C0392B;--blue:#2471A3;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;}
+
+.header{background:var(--soil);color:var(--cream);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.header-title{font-size:15px;font-weight:700;}
+.header-sub{font-size:11px;color:var(--mist);margin-top:2px;}
+.header-time{font-family:'DM Mono',monospace;font-size:11px;color:var(--mist);}
+
+.region-tabs{background:var(--soil);padding:0 18px 12px;display:flex;gap:7px;}
+.tab{padding:5px 13px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid rgba(255,255,255,0.2);color:var(--mist);background:transparent;font-family:'Noto Sans KR',sans-serif;}
+.tab.active{background:var(--sprout);border-color:var(--sprout);color:white;}
+
+.main{padding:14px;max-width:580px;margin:0 auto;display:flex;flex-direction:column;gap:13px;}
+.card{background:var(--white);border-radius:16px;padding:17px;box-shadow:0 2px 8px rgba(44,24,16,0.07);}
+.card-label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--mist);margin-bottom:11px;}
+
+.weather-card{background:linear-gradient(135deg,var(--leaf) 0%,#3D6B1F 100%);color:white;border-radius:16px;padding:20px 18px;}
+.weather-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;}
+.weather-region{font-size:12px;opacity:0.75;margin-bottom:3px;}
+.weather-temp{font-size:46px;font-weight:300;line-height:1;font-family:'DM Mono',monospace;}
+.weather-temp sup{font-size:18px;vertical-align:super;}
+.weather-icon-big{font-size:50px;line-height:1;}
+.weather-desc{font-size:14px;opacity:0.9;margin-bottom:2px;}
+.weather-feels{font-size:12px;opacity:0.6;}
+.weather-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,0.15);border-radius:12px;overflow:hidden;margin-top:12px;}
+.w-stat{background:rgba(0,0,0,0.15);padding:10px 5px;text-align:center;}
+.w-stat-label{font-size:10px;opacity:0.7;margin-bottom:3px;}
+.w-stat-val{font-size:16px;font-weight:700;font-family:'DM Mono',monospace;}
+.w-stat-unit{font-size:10px;opacity:0.7;}
+.insam-alert{border-radius:11px;padding:12px 13px;display:flex;align-items:center;gap:9px;margin-top:11px;}
+.insam-alert.good{background:rgba(90,140,42,0.22);border:1px solid rgba(90,140,42,0.4);}
+.insam-alert.warn{background:rgba(212,122,42,0.22);border:1px solid rgba(212,122,42,0.5);}
+.insam-alert.danger{background:rgba(192,57,43,0.22);border:1px solid rgba(192,57,43,0.5);}
+.alert-icon{font-size:20px;flex-shrink:0;}
+.alert-title{font-size:13px;font-weight:700;}
+.alert-desc{font-size:11px;opacity:0.85;margin-top:2px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.spinner{width:18px;height:18px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:spin 0.8s linear infinite;}
+
+.forecast-row{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px;}
+.forecast-row::-webkit-scrollbar{display:none;}
+.forecast-item{flex:0 0 66px;text-align:center;padding:10px 4px;border-radius:12px;background:var(--fog);}
+.forecast-item.today{background:var(--leaf);color:white;}
+.forecast-day{font-size:11px;font-weight:600;margin-bottom:4px;opacity:0.8;}
+.forecast-icon{font-size:19px;margin-bottom:4px;}
+.forecast-hi{font-size:13px;font-weight:700;}
+.forecast-lo{font-size:11px;opacity:0.6;margin-top:1px;}
+
+.env-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.env-item{background:var(--fog);border-radius:12px;padding:12px;}
+.env-item-label{font-size:11px;color:var(--text-soft);margin-bottom:4px;}
+.env-bar-bg{height:6px;background:var(--mist);border-radius:3px;margin:5px 0;position:relative;overflow:hidden;}
+.env-bar-fill{height:100%;border-radius:3px;position:absolute;top:0;left:0;transition:width 0.5s ease;}
+.env-bar-fill.good{background:var(--sprout);}
+.env-bar-fill.warn{background:var(--warn);}
+.env-bar-fill.danger{background:var(--danger);}
+.env-val{font-size:16px;font-weight:700;font-family:'DM Mono',monospace;}
+.env-range{font-size:10px;color:var(--mist);margin-top:2px;}
+.env-status{font-size:10px;font-weight:600;margin-top:2px;}
+.env-status.good{color:var(--sprout);}
+.env-status.warn{color:var(--warn);}
+.env-status.danger{color:var(--danger);}
+
+.price-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.year-select{
+  appearance:none;-webkit-appearance:none;
+  background:var(--leaf);color:white;border:none;border-radius:20px;
+  padding:5px 26px 5px 12px;font-size:12px;font-weight:600;
+  font-family:'Noto Sans KR',sans-serif;cursor:pointer;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='white'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 9px center;
+}
+
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px;}
+.stat-card{background:var(--fog);border-radius:12px;padding:11px 10px;}
+.stat-grade{font-size:10px;color:var(--text-soft);margin-bottom:4px;}
+.stat-price{font-size:17px;font-weight:700;font-family:'DM Mono',monospace;color:var(--text);}
+.stat-unit{font-size:10px;color:var(--mist);}
+.stat-change{font-size:11px;font-weight:600;margin-top:4px;}
+.stat-change.up{color:var(--danger);}
+.stat-change.down{color:var(--blue);}
+.stat-change.same{color:var(--mist);}
+
+.period-btns{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;scrollbar-width:none;}
+.period-btns::-webkit-scrollbar{display:none;}
+.period-btn{
+  padding:5px 12px;border-radius:20px;font-size:12px;
+  font-family:'Noto Sans KR',sans-serif;font-weight:600;
+  cursor:pointer;white-space:nowrap;flex-shrink:0;
+  border:1.5px solid var(--fog);background:var(--white);color:var(--text-soft);
+  transition:all 0.15s;
+}
+.period-btn.active{background:var(--sprout);border-color:var(--sprout);color:white;}
+
+.chart-wrap{position:relative;width:100%;height:200px;}
+
+.legend-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;margin-bottom:14px;}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text-soft);}
+.legend-dot{width:18px;height:3px;border-radius:2px;flex-shrink:0;}
+
+.price-table{width:100%;border-collapse:collapse;}
+.price-table th{font-size:10px;color:var(--mist);font-weight:600;text-align:right;padding:0 0 8px;border-bottom:1px solid var(--fog);}
+.price-table th:first-child{text-align:left;}
+.price-table td{padding:9px 0;border-bottom:1px solid var(--fog);font-size:12px;text-align:right;font-family:'DM Mono',monospace;}
+.price-table td:first-child{text-align:left;font-family:'Noto Sans KR',sans-serif;}
+.price-table tr:last-child td{border-bottom:none;}
+.grade-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px;vertical-align:middle;}
+.price-now{font-weight:700;color:var(--text);font-size:13px;}
+.chg-up{color:var(--danger);}
+.chg-down{color:var(--blue);}
+.chg-same{color:var(--mist);}
+
+.region-list{display:flex;flex-direction:column;gap:9px;}
+.region-item{display:flex;align-items:center;gap:9px;}
+.region-name{font-size:12px;font-weight:500;width:56px;flex-shrink:0;}
+.region-bar-bg{flex:1;height:8px;background:var(--fog);border-radius:4px;position:relative;overflow:hidden;}
+.region-bar-fill{height:100%;border-radius:4px;background:var(--root);position:absolute;top:0;left:0;transition:width 0.4s ease;}
+.region-bar-fill.highlight{background:var(--sprout);}
+.region-val{font-size:12px;font-weight:700;font-family:'DM Mono',monospace;width:65px;text-align:right;flex-shrink:0;}
+
+.refresh-btn{background:var(--leaf);color:white;border:none;padding:10px 22px;border-radius:10px;font-size:13px;font-family:'Noto Sans KR',sans-serif;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;margin:0 auto;}
+.data-note{font-size:11px;color:var(--mist);text-align:center;padding:4px 0;}
+
+/* PWA 설치 배너 */
+.install-banner{
+  background:var(--soil);color:white;
+  padding:12px 18px;display:flex;align-items:center;justify-content:space-between;gap:10px;
+  display:none;
+}
+.install-banner.show{display:flex;}
+.install-btn{background:var(--sprout);color:white;border:none;border-radius:8px;padding:7px 14px;font-size:12px;font-weight:700;font-family:'Noto Sans KR',sans-serif;cursor:pointer;white-space:nowrap;}
+.install-close{background:none;border:none;color:rgba(255,255,255,0.5);font-size:18px;cursor:pointer;padding:0 4px;}
+</style>
+</head>
+<body>
+
+<div class="install-banner" id="installBanner">
+  <div style="font-size:13px;">📱 홈화면에 추가하면 앱처럼 쓸 수 있어요</div>
+  <div style="display:flex;gap:8px;align-items:center;">
+    <button class="install-btn" id="installBtn">설치</button>
+    <button class="install-close" onclick="document.getElementById('installBanner').classList.remove('show')">✕</button>
+  </div>
+</div>
+
+<div class="header">
+  <div>
+    <div class="header-title">🌿 계룡 인삼 농가 대시보드</div>
+    <div class="header-sub">광석리 · 도곡리 · 향한리</div>
+  </div>
+  <div class="header-time" id="currentTime">--:--</div>
+</div>
+
+<div class="region-tabs">
+  <button class="tab active" onclick="selectRegion(this,'광석리')">📍 광석리</button>
+  <button class="tab" onclick="selectRegion(this,'도곡리')">도곡리</button>
+  <button class="tab" onclick="selectRegion(this,'향한리')">향한리</button>
+</div>
+
+<div class="main">
+
+  <div class="weather-card">
+    <div class="weather-top">
+      <div>
+        <div class="weather-region" id="wRegion">계룡시 광석리</div>
+        <div class="weather-temp" id="wTemp">--<sup>°</sup></div>
+        <div class="weather-desc" id="wDesc">날씨 불러오는 중</div>
+        <div class="weather-feels" id="wFeels">체감 --°</div>
+      </div>
+      <div id="wIconWrap"><div class="spinner"></div></div>
+    </div>
+    <div class="weather-stats">
+      <div class="w-stat"><div class="w-stat-label">습도</div><div class="w-stat-val" id="wHumidity">--</div><div class="w-stat-unit">%</div></div>
+      <div class="w-stat"><div class="w-stat-label">바람</div><div class="w-stat-val" id="wWind">--</div><div class="w-stat-unit">km/h</div></div>
+      <div class="w-stat"><div class="w-stat-label">강수확률</div><div class="w-stat-val" id="wRain">--</div><div class="w-stat-unit">%</div></div>
+    </div>
+    <div class="insam-alert good" id="insamAlert">
+      <div class="alert-icon" id="alertIcon">🌱</div>
+      <div>
+        <div class="alert-title" id="alertTitle">생육 상태 확인 중...</div>
+        <div class="alert-desc" id="alertDesc">잠시만 기다려주세요</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">주간 예보</div>
+    <div class="forecast-row" id="forecastRow">
+      <div style="color:var(--mist);font-size:13px;padding:8px 0;">불러오는 중...</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">인삼 재배 환경 체크</div>
+    <div class="env-grid">
+      <div class="env-item">
+        <div class="env-item-label">🌡️ 온도</div>
+        <div class="env-val" id="envTemp">--°C</div>
+        <div class="env-bar-bg"><div class="env-bar-fill good" id="envTempBar" style="width:0%"></div></div>
+        <div class="env-range">적정: 15~25°C</div>
+        <div class="env-status good" id="envTempStatus">확인 중</div>
+      </div>
+      <div class="env-item">
+        <div class="env-item-label">💧 습도</div>
+        <div class="env-val" id="envHumid">--%</div>
+        <div class="env-bar-bg"><div class="env-bar-fill good" id="envHumidBar" style="width:0%"></div></div>
+        <div class="env-range">적정: 60~80%</div>
+        <div class="env-status good" id="envHumidStatus">확인 중</div>
+      </div>
+      <div class="env-item">
+        <div class="env-item-label">💨 바람</div>
+        <div class="env-val" id="envWind">-- km/h</div>
+        <div class="env-bar-bg"><div class="env-bar-fill good" id="envWindBar" style="width:0%"></div></div>
+        <div class="env-range">주의: 36km/h↑</div>
+        <div class="env-status good" id="envWindStatus">확인 중</div>
+      </div>
+      <div class="env-item">
+        <div class="env-item-label">☁️ 날씨</div>
+        <div class="env-val" id="envCloud" style="font-size:13px;line-height:1.3;">--</div>
+        <div class="env-bar-bg"><div class="env-bar-fill good" id="envCloudBar" style="width:0%"></div></div>
+        <div class="env-range">인삼: 차광 필수</div>
+        <div class="env-status good" id="envCloudStatus">확인 중</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="price-top">
+      <div class="card-label" style="margin-bottom:0">인삼 도매 시세</div>
+      <select class="year-select" id="yearSelect" onchange="onYearChange()">
+        <option value="4">4년근</option>
+        <option value="5" selected>5년근</option>
+        <option value="6">6년근</option>
+      </select>
+    </div>
+    <div class="stat-grid" id="statGrid"></div>
+    <div class="period-btns" id="periodBtns"></div>
+    <div class="chart-wrap">
+      <canvas id="priceChart" role="img" aria-label="인삼 도매 시세 기간별 추이 차트"></canvas>
+    </div>
+    <div class="legend-row" id="legendRow"></div>
+    <table class="price-table">
+      <thead>
+        <tr>
+          <th>등급</th><th>현재가</th><th>전일비</th><th>기간등락</th>
+        </tr>
+      </thead>
+      <tbody id="priceTableBody"></tbody>
+    </table>
+    <div style="margin-top:10px;font-size:11px;color:var(--mist);">서울 가락시장 기준 참고값 · KAMIS · 단위: 원/kg</div>
+  </div>
+
+  <div class="card">
+    <div class="price-top">
+      <div class="card-label" style="margin-bottom:0">산지별 시세 비교</div>
+      <div style="font-size:11px;color:var(--mist)" id="regionLabel">5년근 상품 기준</div>
+    </div>
+    <div class="region-list" id="regionList"></div>
+    <div style="margin-top:10px;font-size:11px;color:var(--mist);">수삼 상품 기준 · 원/kg</div>
+  </div>
+
+  <button class="refresh-btn" onclick="loadAll()"><span id="refreshIcon">🔄</span> 새로고침</button>
+  <div class="data-note">날씨: Open-Meteo API · 시세: KAMIS 참고값</div>
+  <div style="height:16px;"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+// ── PWA 설치 ──
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById('installBanner').classList.add('show');
+});
+document.getElementById('installBtn').addEventListener('click', async () => {
+  if(!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const {outcome} = await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  document.getElementById('installBanner').classList.remove('show');
+});
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('sw.js').catch(()=>{});
+}
+
+// ── 지역 ──
+const REGIONS = {
+  '광석리':{lat:36.277,lon:127.189,label:'계룡시 광석리'},
+  '도곡리':{lat:36.282,lon:127.195,label:'계룡시 도곡리'},
+  '향한리':{lat:36.270,lon:127.183,label:'계룡시 향한리'},
+};
+let curRegion = '광석리';
+
+function updateTime(){
+  const n=new Date();
+  document.getElementById('currentTime').textContent=
+    String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')+' 기준';
+}
+setInterval(updateTime,30000); updateTime();
+
+function wIcon(c,day){
+  if(c===0)return day?'☀️':'🌙';if(c<=2)return day?'⛅':'🌙';
+  if(c===3)return'☁️';if(c<=49)return'🌫️';if(c<=59)return'🌦️';
+  if(c<=67)return'🌧️';if(c<=77)return'❄️';if(c<=82)return'🌧️';
+  if(c>=95)return'⛈️';return'🌤️';
+}
+function wDesc(c){
+  if(c===0)return'맑음';if(c<=2)return'구름 조금';if(c===3)return'흐림';
+  if(c<=49)return'안개';if(c<=59)return'이슬비';if(c<=67)return'비';
+  if(c<=77)return'눈';if(c<=82)return'소나기';if(c>=95)return'천둥번개';return'흐림';
+}
+function dayName(s,i){
+  if(i===0)return'오늘';if(i===1)return'내일';
+  return['일','월','화','수','목','금','토'][new Date(s).getDay()]+'요';
+}
+function insamSt(temp,humid,wind){
+  if(temp>30)return{lv:'danger',icon:'🚨',title:'고온 위험 (30°C 초과)',desc:'즉시 차광·환기 조치 필요'};
+  if(temp<0) return{lv:'danger',icon:'🚨',title:'동해 위험 (0°C 미만)',desc:'서리·동결 방지 조치 필요'};
+  if(wind>=36)return{lv:'warn',icon:'⚠️',title:'강풍 주의',desc:'해가림 시설 점검 필요'};
+  if(humid>88)return{lv:'warn',icon:'⚠️',title:'과습 주의 (역병 위험)',desc:'배수·통풍을 확인해주세요'};
+  if(humid<50)return{lv:'warn',icon:'⚠️',title:'건조 주의',desc:'수분 상태를 확인해주세요'};
+  if(temp>25) return{lv:'warn',icon:'⚠️',title:'고온 주의 (25°C 초과)',desc:'차광망 상태 확인 필요'};
+  return{lv:'good',icon:'🌱',title:'생육 환경 양호',desc:`온도 ${temp}°C · 습도 ${humid}% — 적정 범위`};
+}
+function setEnv(vId,bId,sId,disp,pct,lv,stxt){
+  document.getElementById(vId).textContent=disp;
+  document.getElementById(bId).style.width=Math.min(100,Math.max(0,pct))+'%';
+  document.getElementById(bId).className='env-bar-fill '+lv;
+  document.getElementById(sId).textContent=stxt;
+  document.getElementById(sId).className='env-status '+lv;
+}
+
+async function loadWeather(){
+  const r=REGIONS[curRegion];
+  document.getElementById('wRegion').textContent=r.label;
+  try{
+    const url=`https://api.open-meteo.com/v1/forecast?latitude=${r.lat}&longitude=${r.lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,precipitation_probability&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Asia%2FSeoul&forecast_days=7`;
+    const res=await fetch(url);
+    if(!res.ok)throw new Error('fetch fail');
+    renderWeather(await res.json());
+  }catch(e){
+    renderWeather({
+      fallback:true,
+      current:{temperature_2m:22,relative_humidity_2m:78,apparent_temperature:23,weather_code:2,wind_speed_10m:12,precipitation_probability:15},
+      daily:{time:['2026-06-26','2026-06-27','2026-06-28','2026-06-29','2026-06-30','2026-07-01','2026-07-02'],
+        weather_code:[2,3,61,1,2,3,61],temperature_2m_max:[27,29,26,31,30,29,27],
+        temperature_2m_min:[19,20,18,22,21,20,18],precipitation_probability_max:[15,25,70,10,20,35,65]}
+    });
+  }
+}
+
+function renderWeather(d){
+  const c=d.current;
+  const temp=Math.round(c.temperature_2m),feels=Math.round(c.apparent_temperature);
+  const humid=c.relative_humidity_2m,wind=Math.round(c.wind_speed_10m),rain=c.precipitation_probability,code=c.weather_code;
+  const isDay=new Date().getHours()>=6&&new Date().getHours()<20;
+  document.getElementById('wTemp').innerHTML=temp+'<sup>°</sup>';
+  document.getElementById('wDesc').textContent=wDesc(code)+(d.fallback?' (추정값)':'');
+  document.getElementById('wFeels').textContent='체감 '+feels+'°';
+  document.getElementById('wIconWrap').innerHTML='<div style="font-size:50px;line-height:1">'+wIcon(code,isDay)+'</div>';
+  document.getElementById('wHumidity').textContent=humid;
+  document.getElementById('wWind').textContent=wind;
+  document.getElementById('wRain').textContent=rain;
+  const s=insamSt(temp,humid,wind);
+  document.getElementById('insamAlert').className='insam-alert '+s.lv;
+  document.getElementById('alertIcon').textContent=s.icon;
+  document.getElementById('alertTitle').textContent=s.title;
+  document.getElementById('alertDesc').textContent=s.desc;
+  const tLv=temp<0||temp>30?'danger':temp<15||temp>25?'warn':'good';
+  setEnv('envTemp','envTempBar','envTempStatus',temp+'°C',Math.min(100,(temp+10)/50*100),tLv,tLv==='good'?'✓ 적정 범위':tLv==='warn'?'△ 주의 범위':'⚠️ 위험');
+  const hLv=humid<50||humid>90?'danger':humid<60||humid>80?'warn':'good';
+  setEnv('envHumid','envHumidBar','envHumidStatus',humid+'%',humid,hLv,hLv==='good'?'✓ 적정 범위':hLv==='warn'?'△ 주의 범위':'⚠️ 위험');
+  const wLv=wind>=36?'danger':wind>=20?'warn':'good';
+  setEnv('envWind','envWindBar','envWindStatus',wind+' km/h',Math.min(100,wind/50*100),wLv,wLv==='good'?'✓ 양호':wLv==='warn'?'△ 주의':'⚠️ 강풍 위험');
+  const cLv=code===0?'warn':'good';
+  setEnv('envCloud','envCloudBar','envCloudStatus',wDesc(code),code===0?85:code<=2?55:35,cLv,code===0?'⚠️ 차광 확인 필요':'✓ 양호');
+  const daily=d.daily;
+  let fh='';
+  for(let i=0;i<7;i++){
+    fh+=`<div class="forecast-item ${i===0?'today':''}">
+      <div class="forecast-day">${dayName(daily.time[i],i)}</div>
+      <div class="forecast-icon">${wIcon(daily.weather_code[i],true)}</div>
+      <div class="forecast-hi">${Math.round(daily.temperature_2m_max[i])}°</div>
+      <div class="forecast-lo">${Math.round(daily.temperature_2m_min[i])}°</div>
+    </div>`;
+  }
+  document.getElementById('forecastRow').innerHTML=fh;
+}
+
+// ── 시세 ──
+const GRADE_META={
+  4:[{k:'특',label:'수삼 특',color:'#2a78d6',dash:[]},{k:'상',label:'수삼 상',color:'#1baf7a',dash:[5,3]},{k:'중',label:'수삼 중',color:'#eda100',dash:[2,2]}],
+  5:[{k:'특',label:'수삼 특',color:'#2a78d6',dash:[]},{k:'상',label:'수삼 상',color:'#1baf7a',dash:[5,3]},{k:'중',label:'수삼 중',color:'#eda100',dash:[2,2]}],
+  6:[{k:'특',label:'수삼 특',color:'#2a78d6',dash:[]},{k:'상',label:'수삼 상',color:'#1baf7a',dash:[5,3]},{k:'홍',label:'홍삼 1등',color:'#e34948',dash:[6,2]}],
+};
+const BASE_PRICE={4:{특:48000,상:42000,중:33000},5:{특:75000,상:68000,중:52000},6:{특:110000,상:95000,홍:180000}};
+const DAY_CHANGE={4:{특:+500,상:-800,중:0},5:{특:+1500,상:+1200,중:-500},6:{특:+3000,상:+2500,홍:-1000}};
+const REGION_DATA={
+  4:[{n:'충남 금산',p:43000},{n:'경북 풍기',p:45000},{n:'강원 횡성',p:40000},{n:'충남 계룡',p:41000,h:true},{n:'충북 음성',p:38000}],
+  5:[{n:'충남 금산',p:68500},{n:'경북 풍기',p:72000},{n:'강원 횡성',p:65000},{n:'충남 계룡',p:66000,h:true},{n:'충북 음성',p:61000}],
+  6:[{n:'충남 금산',p:96000},{n:'경북 풍기',p:102000},{n:'강원 횡성',p:91000},{n:'충남 계룡',p:93000,h:true},{n:'충북 음성',p:87000}],
+};
+const PERIODS=[{label:'1주',days:7},{label:'1개월',days:30},{label:'3개월',days:90},{label:'6개월',days:180},{label:'1년',days:365}];
+let selYear=5,selDays=30,chartInst=null;
+
+function makeHistory(base,days){
+  const arr=[];const now=Date.now();let v=base;
+  for(let i=days;i>=0;i--){
+    const d=new Date(now-i*86400000);
+    v=Math.max(base*0.85,Math.min(base*1.15,v+(Math.random()-0.47)*base*0.012));
+    arr.push({lbl:(d.getMonth()+1)+'/'+(d.getDate()),val:Math.round(v)});
+  }
+  return arr;
+}
+function thinLabels(arr,days){
+  const step=days<=7?1:days<=30?5:days<=90?10:days<=180?20:45;
+  return arr.map((a,i)=>i%step===0?a.lbl:'');
+}
+
+function renderPrice(){
+  const yr=selYear,days=selDays;
+  const metas=GRADE_META[yr];
+  const bases=Object.values(BASE_PRICE[yr]);
+  const changes=Object.values(DAY_CHANGE[yr]);
+  const hists=metas.map((_,i)=>makeHistory(bases[i],days));
+  const thin=thinLabels(hists[0],days);
+
+  document.getElementById('statGrid').innerHTML=metas.map((m,i)=>{
+    const last=hists[i][hists[i].length-1].val;
+    const chg=changes[i];
+    const chgCls=chg>0?'up':chg<0?'down':'same';
+    const arr=chg>0?'▲':chg<0?'▼':'—';
+    return `<div class="stat-card">
+      <div class="stat-grade"><span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:${m.color};margin-right:4px;vertical-align:middle;"></span>${m.label}</div>
+      <div class="stat-price">${last.toLocaleString()}<span class="stat-unit">원</span></div>
+      <div class="stat-change ${chgCls}">${arr} ${Math.abs(chg).toLocaleString()}</div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('periodBtns').innerHTML=PERIODS.map(p=>
+    `<button class="period-btn ${p.days===selDays?'active':''}" onclick="setPeriod(${p.days})">${p.label}</button>`
+  ).join('');
+
+  const datasets=metas.map((m,i)=>({
+    label:m.label,data:hists[i].map(h=>h.val),
+    borderColor:m.color,borderWidth:2,borderDash:m.dash,
+    pointRadius:0,pointHoverRadius:4,tension:0.3,fill:false,
+  }));
+  if(chartInst)chartInst.destroy();
+  chartInst=new Chart(document.getElementById('priceChart'),{
+    type:'line',data:{labels:thin,datasets},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.dataset.label}: ${ctx.parsed.y.toLocaleString()}원`}}},
+      scales:{
+        x:{grid:{display:false},ticks:{color:'#C4B8A8',font:{size:10},autoSkip:false,maxRotation:0},border:{display:false}},
+        y:{grid:{color:'#E8E0D4'},ticks:{color:'#C4B8A8',font:{size:10},callback:v=>(v/1000).toFixed(0)+'k'},border:{display:false}}
+      }
+    }
+  });
+
+  document.getElementById('legendRow').innerHTML=metas.map(m=>
+    `<div class="legend-item"><div class="legend-dot" style="background:${m.color}"></div>${m.label}</div>`
+  ).join('');
+
+  document.getElementById('priceTableBody').innerHTML=metas.map((m,i)=>{
+    const first=hists[i][0].val,last=hists[i][hists[i].length-1].val;
+    const pdiff=last-first,psign=pdiff>=0?'+':'';
+    const pCls=pdiff>0?'chg-up':pdiff<0?'chg-down':'chg-same';
+    const chg=changes[i];
+    const dCls=chg>0?'chg-up':chg<0?'chg-down':'chg-same';
+    const darr=chg>0?'▲':chg<0?'▼':'—';
+    return `<tr>
+      <td><span class="grade-dot" style="background:${m.color}"></span>${m.label}</td>
+      <td class="price-now">${last.toLocaleString()}</td>
+      <td class="${dCls}">${darr} ${Math.abs(chg).toLocaleString()}</td>
+      <td class="${pCls}">${psign}${pdiff.toLocaleString()}</td>
+    </tr>`;
+  }).join('');
+
+  const rp=REGION_DATA[yr];
+  const maxP=Math.max(...rp.map(r=>r.p));
+  document.getElementById('regionList').innerHTML=rp.map(r=>`
+    <div class="region-item">
+      <div class="region-name">${r.n}</div>
+      <div class="region-bar-bg"><div class="region-bar-fill ${r.h?'highlight':''}" style="width:${(r.p/maxP*100).toFixed(0)}%"></div></div>
+      <div class="region-val">${r.p.toLocaleString()}</div>
+    </div>`).join('');
+  document.getElementById('regionLabel').textContent=`${yr}년근 상품 기준`;
+}
+
+function setPeriod(days){selDays=days;renderPrice();}
+function onYearChange(){selYear=parseInt(document.getElementById('yearSelect').value);renderPrice();}
+function selectRegion(el,name){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');curRegion=name;loadWeather();
+}
+async function loadAll(){
+  const ic=document.getElementById('refreshIcon');
+  ic.textContent='⏳';
+  await loadWeather();
+  renderPrice();
+  ic.textContent='🔄';
+}
+loadAll();
+</script>
+</body>
+</html>
